@@ -13,6 +13,7 @@ void init(){
 
 int main() {
     stdio_init_all();  // Initialize standard I/O
+    init();
     sleep_ms(2000);  // Delay for sensor stabilization
     
     bool pir_state = false;

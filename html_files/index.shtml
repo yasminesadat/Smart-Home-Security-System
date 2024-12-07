@@ -6,9 +6,8 @@
     <body> <h1>PicoW Webserver Tutorial</h1>
         <br>
         <h2>This bit is SSI:</h2>
-        <p>Voltage: <!--#volt--></p>
-        <p>Temp: <!--#temp--> C</p>
-        <p>LED is: <!--#led--></p>
+    
+        <p>IR READING IS: <!--#irsensor--></p>
         <br>
         <h2>This bit is CGI:</h2>
         <a href="/led.cgi?led=1"><button>LED ON</button></a>

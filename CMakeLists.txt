@@ -10,6 +10,7 @@ project(pico_w_webserver)
 pico_sdk_init()
 
 message("Running makefsdata python script")
+
 execute_process(COMMAND
     py makefsdata.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
@@ -17,11 +18,14 @@ execute_process(COMMAND
 
 add_executable(${PROGRAM_NAME}
     main.c
+    buzzer.c
+    ir_sensor.c
+    shared.c
 )
 
 target_include_directories(${PROGRAM_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
-)
+)   
 
 target_link_libraries(${PROGRAM_NAME}
     pico_cyw43_arch_lwip_threadsafe_background

@@ -1,6 +1,8 @@
 #include "servo.h"
 #include "hardware/clocks.h"
 
+static door_state_t door_state = DOOR_CLOSED;
+
 void go_degree(float degree)
 {
     int duty = (((float)(ROTATE_180 - ROTATE_0) / 180.0) * degree) + ROTATE_0;
@@ -36,8 +38,14 @@ void servo_init()
 
 void open_door(){
     go_degree(280);
+    door_state = DOOR_OPEN;
 }
 
 void close_door(){
     go_degree(92);
+    door_state = DOOR_OPEN;
+}
+
+door_state_t get_door_state() {
+    return door_state;
 }

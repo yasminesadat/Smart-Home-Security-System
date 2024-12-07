@@ -8,9 +8,7 @@
 #include "ir_sensor.h"
 #include "servo.h"
 
-static QueueHandle_t xQueue = NULL;
-
-void init(){
+void init() {
     stdio_init_all();
     buzzer_init();
     ultrasonic_sensor_init();
@@ -18,125 +16,125 @@ void init(){
     servo_init();
 }
 
-// Function to check if a value is in the queue
-bool is_value_in_queue(QueueHandle_t queue, bool value) {
-    bool queue_value;
-    bool found = false;
-    bool messages_waiting = uxQueueMessagesWaiting(queue);
-
-    for (int i = 0; i < messages_waiting; i++) {
-        if (xQueueReceive(queue, &queue_value, 0) == pdPASS) {
-            if (queue_value == value) {
-                found = true;
-            }
-            // Add the value back to the queue
-            xQueueSend(queue, &queue_value, 0);
-        }
-    }
-    return found;
-}
-
 // Ultrasonic sensor control task
-void ultrasonic_sensor_task(void *pvParameters){
-    bool trigger_app = 1;
-    while(true){
-        if(ultrasonic_sensor_read()){
-          printf("Trigger app");
-          xQueueSend(xQueue, &trigger_app, 0);
-        }
+void ultrasonic_sensor_task(void *pvParameters) {
+    while (true) {
+        if (ultrasonic_sensor_read() && get_door_state() == DOOR_CLOSED) {
+            printf("Someone is waiting in front of the door. Enter password: ");
+            char password[4]; // Increase buffer size to handle longer input
+            fgets(password, sizeof(password), stdin);
 
-        if(get_door_state() == DOOR_OPEN && !ultrasonic_sensor_read()){
-            bool trigger_door_close = 1;
-            xQueueSend(xQueue, &trigger_door_close, 0);
+            // Remove newline character if present
+            size_t len = strlen(password);
+            if (len > 0 && password[len - 1] == '\n') {
+                password[len - 1] = '\0';
+            }
+
+            printf("Password: %s\n", password);
+            if (strcmp(password, "123") == 0) {
+                // Password is correct, take action input
+                printf("Password correct.\n Enter 'o' to open door.\n Enter 'b' to trigger buzzer if you are not expecting a visitor.\n");
+                char input;
+                while (true) {
+                    input = getchar();
+                    if (input == 'o' || input == 'b') {
+                        break; // Exit the loop when a valid input is received
+                    }
+                    vTaskDelay(pdMS_TO_TICKS(100)); // Add a small delay to prevent rapid polling
+                }
+                if (input == 'o') {
+                    open_door();
+                    printf("Door is opened.\n");                 
+                } else if (input == 'b' && !is_buzzer_on()) {
+                    printf("Buzzer is ON. Enter 'OFF' to turn off the buzzer.\n");
+                    char off_input[4];
+                    fgets(off_input, sizeof(off_input), stdin);
+
+                    // Remove newline character if present
+                    size_t off_len = strlen(off_input);
+                    if (off_len > 0 && off_input[off_len - 1] == '\n') {
+                        off_input[off_len - 1] = '\0';
+                    }
+
+                    if (strcmp(off_input, "OFF") == 0) {
+                        buzzer_off();
+                        printf("Buzzer is OFF.\n");
+                    }
+                    vTaskDelay(pdMS_TO_TICKS(100)); // Add a small delay to prevent rapid polling
+                }
+                } else {
+                // Password is incorrect
+                printf("Incorrect password.\n");
+            }
         }
-        vTaskDelay(pdMS_TO_TICKS(3000));
+        else if (get_door_state() == DOOR_OPEN && !ultrasonic_sensor_read()) {
+            close_door();        
+        }
+        vTaskDelay(pdMS_TO_TICKS(2000)); // Add a delay to prevent rapid polling
     }
 }
 
 // IR sensor control task
-void ir_sensor_task(void *pvParameters){
-    bool trigger_buzzer = 1;
+void ir_sensor_task(void *pvParameters) {
     while (true) {
-        if (ir_sensor_read()) {
-            // Check if the value is already in the queue
-            if (!is_value_in_queue(xQueue, trigger_buzzer)) {
-                xQueueSend(xQueue, &trigger_buzzer, 0);
+        if (ir_sensor_read() && !is_buzzer_on()) {
+            buzzer_on();
+            printf("Buzzer is ON. Enter 'OFF' to turn off the buzzer.\n");
+            char off_input[4];
+            fgets(off_input, sizeof(off_input), stdin);
+
+            // Remove newline character if present
+            size_t off_len = strlen(off_input);
+            if (off_len > 0 && off_input[off_len - 1] == '\n') {
+                off_input[off_len - 1] = '\0';
+            }
+
+            if (strcmp(off_input, "OFF") == 0) {
+                buzzer_off();
+                printf("Buzzer is OFF.\n");
             }
         }
         vTaskDelay(pdMS_TO_TICKS(3000)); // Add a delay to prevent task from running too frequently
     }
 }
 
-// Buzzer control task
-void buzzer_task(void *pvParameters) {
-    bool trigger_buzzer;
-    while (true) {
-        // Wait for a message from the queue
-        if (xQueueReceive(xQueue, &trigger_buzzer, portMAX_DELAY) == pdPASS) {
-            // If a message is received, trigger the buzzer
-            buzzer_on();
-            vTaskDelay(pdMS_TO_TICKS(2000)); // Buzzer on for 2 seconds
-            buzzer_off();
-        }
-    }
-}
+// // Buzzer control task
+// void buzzer_task(void *pvParameters) {
+//     bool trigger_buzzer;
+//     while (true) {
+//         // Wait for a message from the queue
+//         if (xQueueReceive(xQueue, &trigger_buzzer, portMAX_DELAY) == pdPASS) {
+//             // If a message is received, trigger the buzzer
+//             buzzer_on();
+//             vTaskDelay(pdMS_TO_TICKS(2000)); // Buzzer on for 2 seconds
+//             buzzer_off();
+//         }
+//     }
+// }
 
-// Servo control task
-void servo_open_task(void *pvParameters) {
-    bool trigger_door_open;
-    while (true) {
-        // Wait for a message from the queue
-        if (xQueueReceive(xQueue, &trigger_door_open, portMAX_DELAY) == pdPASS) {
-            // If a message is received, open the servo
-            open_door();
-        }
-    }
-}
+// // Servo control task
+// void servo_open_task(void *pvParameters) {
+//     bool trigger_door_open;
+//     while (true) {
+//         // Wait for a message from the queue
+//         if (xQueueReceive(xQueue, &trigger_door_open, portMAX_DELAY) == pdPASS) {
+//             // If a message is received, open the servo
+//             open_door();
+//         }
+//     }
+// }
 
-void servo_close_task(void *pvParameters) {
-    bool trigger_door_close;
-    while (true) {
-        // Wait for a message from the queue
-        if (xQueueReceive(xQueue, &trigger_door_close, portMAX_DELAY) == pdPASS) {
-            // If a message is received, close the servo
-            close_door();
-        }
-    }
-}
+// void servo_close_task(void *pvParameters) {
+//     bool trigger_door_close;
+//     while (true) {
+//         // Wait for a message from the queue
+//         if (xQueueReceive(xQueue, &trigger_door_close, portMAX_DELAY) == pdPASS) {
+//             // If a message is received, close the servo
+//             close_door();
+//         }
+//     }
+// }
 
-void app_task(void *pvParameters) {
- bool trigger_app;
-    while (true) {
-        // Wait for a message from the queue
-        if (xQueueReceive(xQueue, &trigger_app, portMAX_DELAY) == pdPASS) {
-            // If a message is received, take user input for password
-            printf("Someone is waiting in front of the door. Enter password: ");
-            char password[4];
-            for (int i = 0; i < 3; i++) {
-                password[i] = getchar();
-            }
-            password[3] = '\0';
-
-            if (strcmp(password, "123") == 0) {
-                // Password is correct, take action input
-                printf("Password correct.\n Enter 'o' to open door.\n Enter 'b' to trigger buzzer if you are not expecting a visitor.\n");
-                char input = getchar();
-                if (input == 'o') {
-                    bool trigger_door_open = 1;
-                    xQueueSend(xQueue, &trigger_door_open, 0);
-                } else if (input == 'b') {
-                    bool trigger_buzzer = 1;
-                    if (!is_value_in_queue(xQueue, trigger_buzzer)) {
-                      xQueueSend(xQueue, &trigger_buzzer, 0);
-                    }
-                }
-            } else {
-                // Password is incorrect
-                printf("Incorrect password.\n");
-            }
-        }
-    }
-}
 
 // Main function
 int main() {
@@ -144,25 +142,43 @@ int main() {
     init();
 
     // Create the queue
-    xQueue = xQueueCreate(10, sizeof(bool));
+    //xQueue = xQueueCreate(10, sizeof(bool)); // Increase queue size
+
+    // Check if queue creation was successful
+    // if (xQueue == NULL) {
+    //     printf("Failed to create queue\n");
+    //     return 1;
+    // }
 
     // Create the buzzer task
-    if(xTaskCreate(buzzer_task, "Buzzer Task", 256, NULL, 1, NULL) != pdPASS){
+    // if (xTaskCreate(buzzer_task, "Buzzer Task", 256, NULL, 1, NULL) != pdPASS) {
+    //     printf("Failed to create Buzzer Task\n");
+    //     return 1;
+    // }
+
+    // Create the ultrasonic sensor task
+    if (xTaskCreate(ultrasonic_sensor_task, "Ultrasonic Sensor Task", 256, NULL, 1, NULL) != pdPASS) {
         printf("Failed to create Ultrasonic Sensor Task\n");
         return 1;
     }
 
-    // Create the ultrasonic sensor task
-    if(xTaskCreate(ultrasonic_sensor_task, "Ultrasonic Sensor Task", 256, NULL, 1, NULL) != pdPASS){
-        printf("Failed to create Ultrasonic Sensor Task\n");
-        return 1;
-    }
-
-    // Create the ultrasonic sensor task
-    if(xTaskCreate(ir_sensor_task, "IR Sensor Task", 256, NULL, 1, NULL) != pdPASS){
+    // Create the IR sensor task
+    if (xTaskCreate(ir_sensor_task, "IR Sensor Task", 256, NULL, 1, NULL) != pdPASS) {
         printf("Failed to create IR Sensor Task\n");
         return 1;
     }
+
+    // Create the servo open task
+    // if (xTaskCreate(servo_open_task, "Servo Open Task", 256, NULL, 1, NULL) != pdPASS) {
+    //     printf("Failed to create Servo Open Task\n");
+    //     return 1;
+    // }
+
+    // Create the servo close task
+    // if (xTaskCreate(servo_close_task, "Servo Close Task", 256, NULL, 1, NULL) != pdPASS) {
+    //     printf("Failed to create Servo Close Task\n");
+    //     return 1;
+    // }
 
     // Start the scheduler
     vTaskStartScheduler();

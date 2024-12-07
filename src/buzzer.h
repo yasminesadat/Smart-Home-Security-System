@@ -13,5 +13,6 @@
 void buzzer_init();
 void buzzer_on();
 void buzzer_off();
+bool is_buzzer_on();
 
 #endif // BUZZER_H

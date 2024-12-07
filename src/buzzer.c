@@ -13,3 +13,7 @@ void buzzer_on() {
 void buzzer_off(){
     gpio_put(BUZZER_PIN, 0);
 }
+
+bool is_buzzer_on(){
+    return gpio_get(BUZZER_PIN);
+}

@@ -13,7 +13,7 @@
 
 #define ROTATE_0 1000
 #define ROTATE_180 2000
-#define SERVO_PIN 15
+#define SERVO_PIN 13
 
 typedef enum {
     DOOR_CLOSED,

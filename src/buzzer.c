@@ -6,8 +6,10 @@ void buzzer_init() {
     gpio_put(BUZZER_PIN, 0);
 }
 
-void trigger_buzzer() {
+void buzzer_on() {
     gpio_put(BUZZER_PIN, 1);
-    sleep_ms(1000);
+}
+
+void buzzer_off(){
     gpio_put(BUZZER_PIN, 0);
 }

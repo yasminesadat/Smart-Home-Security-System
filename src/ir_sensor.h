@@ -6,7 +6,7 @@
 #include "pico/stdlib.h"
 #endif
 
-#define IR_SENSOR_PIN 4
+#define IR_SENSOR_PIN 15
 
 // Function declarations
 void ir_sensor_init();

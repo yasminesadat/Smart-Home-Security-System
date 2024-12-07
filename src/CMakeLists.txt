@@ -1,10 +1,8 @@
 add_executable(${ProjectName}
     main.c
-    servo.c
     buzzer.c
     ultrasonic_sensor.c
     ir_sensor.c
-    led.c
 )
 
 target_include_directories(${ProjectName} PRIVATE

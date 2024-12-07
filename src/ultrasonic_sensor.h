@@ -7,8 +7,8 @@
 #endif
 
 #define MAX_DISTANCE 20 // Maximum distance we want to ping for (in centimeters)
-#define TRIGGER_PIN 28
-#define ECHO_PIN 27
+#define TRIGGER_PIN 0
+#define ECHO_PIN 1
 
 void ultrasonic_sensor_init();
 bool ultrasonic_sensor_read();

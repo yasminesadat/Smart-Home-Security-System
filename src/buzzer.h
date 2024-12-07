@@ -8,7 +8,7 @@
 #include "pico/stdlib.h"
 #endif
 
-#define BUZZER_PIN 15  
+#define BUZZER_PIN 16 
 
 void buzzer_init();
 void trigger_buzzer();

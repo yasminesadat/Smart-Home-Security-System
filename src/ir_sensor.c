@@ -6,5 +6,5 @@ void ir_sensor_init() {
 }
 
 bool ir_sensor_read() {
-    return gpio_get(IR_SENSOR_PIN);
+    return !gpio_get(IR_SENSOR_PIN);
 }

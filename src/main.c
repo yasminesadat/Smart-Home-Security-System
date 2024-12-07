@@ -4,12 +4,20 @@
 #include "queue.h"
 #include "stdio.h"
 #include "servo.h"
+#include "buzzer.h"
+#include "ultrasonic_sensor.h"
+#include "ir_sensor.h"
+#include "led.h"
 
 static QueueHandle_t xQueue = NULL;
 
 void init(){
     stdio_init_all();
     servo_init();
+    buzzer_init();
+    ir_sensor_init();
+    ultrasonic_sensor_init();
+    led_init();
 }
 
 // Servo control task

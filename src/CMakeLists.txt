@@ -1,5 +1,6 @@
 add_executable(${ProjectName}
     main.c
+    servo.c
 )
 
 target_include_directories(${ProjectName} PRIVATE
@@ -9,6 +10,7 @@ target_include_directories(${ProjectName} PRIVATE
 target_link_libraries(${ProjectName} 
     pico_stdlib 
     FreeRTOS-Kernel-Heap4 
+    hardware_pwm
     )
 
 pico_enable_stdio_usb(${ProjectName} 1)

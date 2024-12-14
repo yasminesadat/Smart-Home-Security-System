@@ -1,19 +1,554 @@
+
 <!DOCTYPE html>
 <html>
-    <head> 
-        <title>PicoW Webserver</title> 
-    </head>
-    <body> <h1>PicoW Webserver Tutorial</h1>
-        <br>
-        <h2>This bit is SSI:</h2>
+<head>
+    <title>Home Security System</title>
+    <style>
+body {
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://securitybrief.com.au/uploads/story/2023/11/14/img-kBYEZKDZ6mTLWr4vhOVJp1PQ.webp') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* Force column layout for all screen sizes */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    width: 100%; /* Ensure container takes full width */
+}
+
+.welcome-section h1 {
+    font-size: 3rem;
+    margin: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin: 20px 0;
+}
+
+.main-button {
+    margin: 20px 0;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #1a73e8;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(26, 115, 232, 0.4);
+    transition: all 0.3s ease-in-out;
+}
+
+.main-button:hover {
+    background-color: #0d47a1;
+    transform: scale(1.05);
+    box-shadow: 0 7px 20px rgba(13, 71, 161, 0.6);
+}
+
+.house-image {
+    width: 80%;
+    max-width: 600px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    margin-top: 20px; /* Space between the button and the image */
+}
+
+/* Preventing layout change for larger screens */
+@media (min-width: 1024px) {
+    .container {
+        flex-direction: column; /* Keep column layout even for larger screens */
+        text-align: center; /* Keep text centered */
+    }
+}
+
+        #securityPage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .alert-box {
+        text-align: center;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .alert-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #f44336;
+        margin-bottom: 20px;
+    }
+
+    .alert-subtitle {
+        font-size: 1.2rem;
+        color: #fff;
+        margin-bottom: 30px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .auth-button {
+        padding: 15px 30px;
+        font-size: 1rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #notMeButton {
+        background-color: #ff1744;
+    }
+
+    #notMeButton:hover {
+        background-color: #d50000;
+        box-shadow: 0 6px 20px rgba(255, 23, 68, 0.6);
+    }
+
+    #meButton {
+        background-color: #4caf50;
+    }
+
+    #meButton:hover {
+        background-color: #087f23;
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+    }
+
+    #passwordSection {
+        display: none;
+    }
+
+    #passwordSection input {
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: calc(100% - 100px);
+        max-width: 250px;
+    }
+
+    .ok-button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+        background-color: #1a73e8;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.3s;
+    }
+
+    .ok-button:hover {
+        background-color: #0d47a1;
+        box-shadow: 0 6px 20px rgba(13, 71, 161, 0.6);
+        transform: scale(1.05);
+    }
     
-        <p>IR READING IS: <!--#irsensor--></p>
-        <br>
-        <h2>This bit is CGI:</h2>
-        <a href="/led.cgi?led=1"><button>LED ON</button></a>
-        <a href="/led.cgi?led=0"><button>LED OFF</button></a>
-        <br>
-        <br>
-        <a href="/index.shtml">Refresh</a>
-   </body>
+    
+    
+     .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Popup box styling */
+    .popup {
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+        transform: scale(0.95);
+        animation: popupScale 0.3s ease-out forwards;
+    }
+    
+    
+     .popup .error-message {
+            color: #f44336; /* Red color for error */
+            font-size: 1rem;
+            margin-top: 10px;
+            visibility: hidden; /* Initially hidden */
+        }
+
+    /* Popup title */
+    .popup h2 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    /* Input field styling */
+    .popup input {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        margin-bottom: 20px;
+        transition: border-color 0.3s ease;
+    }
+
+    .popup input:focus {
+        border-color: #1a73e8; /* Focus border color */
+    }
+
+    /* Submit button styling */
+    .popup button {
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #1a73e8;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup button:hover {
+        background-color: #0d47a1;
+        transform: translateY(-2px); /* Button lift effect */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Popup scaling animation */
+    @keyframes popupScale {
+        0% {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    
+    
+   .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: none; /* Initially hidden */
+}
+
+/* Keyframes for transition */
+@keyframes slideUp {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+}
+
+.show-notification {
+    animation: slideUp 5s forwards;
+    display: block; /* Ensure it's displayed when triggered */
+}
+    
+ 
+        
+    </style>
+    <script>
+        let audio;
+        let isSecurityPageShown = false; // Track the current page state
+
+        // Initialize the audio element
+        window.onload = function () {
+            audio = new Audio('https://www.soundjay.com/household/sounds/creaking-floor-1.mp3');
+            
+        };
+
+        function playAlertSound() {
+            if (audio) {
+                audio.play().catch(error => {
+                    console.error("Audio playback failed:", error);
+                });
+            }
+        }
+
+        function showSecurityPage() {
+            document.getElementById('welcomePage').style.display = 'none';
+            playAlertSound();
+            document.getElementById('securityPage').style.display = 'block';
+             // Play sound on alert
+        }
+
+
+  
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;  // Set the notification message
+    
+    // Make sure the notification is visible
+    notification.style.display = 'block'; // Ensure it's visible when triggered
+    
+    // Remove any previous animations
+    notification.classList.remove('show-notification');
+    
+    // Trigger the animation
+    notification.offsetHeight; // Trigger reflow to reset animation
+    notification.classList.add('show-notification');
+    
+    // After 2 seconds, hide the notification (it will slide up due to the animation)
+    setTimeout(() => {
+        notification.style.display = 'none';  // Hide the notification after animation
+    }, 6000); // 2 seconds
+}
+
+
+function checkPassword() {
+            const password = document.getElementById('popupPasswordInput').value; // Get the password from the popup input
+            const errorMessage = document.getElementById('error-message'); // Error message element
+            const messageContainer = document.getElementById('messageContainer');  // Container to show the message
+
+            if (password === "1234") {
+                // If password is correct, grant access and close popup
+                const popupOverlay = document.getElementById('popupOverlay');
+                popupOverlay.style.display = 'none'; // Close the popup
+              
+                showNotification("Password Correct! Access granted.");
+                
+
+                         fetch('/buzzer.cgi?buzzer=0')
+            .then(response => response.text())
+            .then(data => {
+                console.log('Buzzer turned off:', data);
+
+                // Send request to open the servo
+                return fetch('/servo.cgi?servo=open');
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Servo opened:', data);
+                // Redirect back to the home page
+                window.location.href = '/index.shtml';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+                
+            } else  {
+                // Show error message if password is incorrect
+                errorMessage.textContent = "Incorrect password. Try again.";
+                errorMessage.style.visibility = 'visible'; // Make the error message visible
+            }
+        }
+
+
+        function checkTurnOff(){
+            const textinput = document.getElementById('popupTurnOffInput').value; // Get the password from the popup input
+            const errorMessage = document.getElementById('error-message2'); // Error message element
+            const messageContainer = document.getElementById('messageContainer2');  // Container to show the message
+
+            if (textinput === "OFF") {
+                const popupOverlay2 = document.getElementById('popupOverlay2');
+                popupOverlay2.style.display = 'none'; // Close the popup
+                console.log("Buzzer Turned Off");
+                window.location.href = '/buzzer.cgi?buzzer=0';
+                showNotification("Alarm Deactivated!");
+ 
+            }
+            else {
+                // Show error message if password is incorrect
+                errorMessage.textContent = "Incorrect text. Try again.";
+                errorMessage.style.visibility = 'visible'; // Make the error message visible
+            }
+        }
+
+
+
+
+
+
+        function handleMe() {
+            const popupOverlay = document.getElementById('popupOverlay');
+            popupOverlay.style.display = 'flex';
+        }
+
+
+
+        function handleNotMe() {
+            
+            const popupOverlay2 = document.getElementById('popupOverlay2');
+            popupOverlay2.style.display = 'flex';
+
+
+            fetch('/buzzer.cgi?buzzer=1')
+            .then(response => response.text())
+            .then(data => {
+                console.log('buzzer turned on:', data);
+
+                // Send request to open the servo
+                return fetch('/servo.cgi?servo=close');
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Servo closed:', data);
+                // Redirect back to the home page
+                // window.location.href = '/index.shtml';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+
+
+
+   
+        function updateStatus() {
+           
+            var irSensorReading = document.getElementById("irsensor").textContent.trim();
+           
+
+            console.log("IR Sensor Reading:", irSensorReading);
+         
+            if(irSensorReading=== "ON"  && !isSecurityPageShown) {
+                document.getElementById('welcomePage').style.display = 'none';
+                document.getElementById('securityPage').style.display = 'block';
+                isSecurityPageShown = true;
+            }
+            // if(irSensorReading=== "ON")
+            // {
+            //     showNotification("Motion Detected Beside The Protected Room!");
+  
+            // }
+         
+        }
+    
+        // Check sensor status every second
+        setInterval(updateStatus, 1000);
+        window.onload = updateStatus;
+    
+
+   
+
+//         document.addEventListener('DOMContentLoaded', () => {
+//     setInterval(updateStatus, 1000); // Periodically check sensor status
+// });
+        
+    </script>
+</head>
+<body>
+    <div id="notification" class="notification"></div>
+
+    <div class="container" id="welcomePage">
+        <div id="irsensor" style="display: none" ><!--#irsensor--></div>
+        <div class="welcome-section">
+          </br>
+            <h1>Welcome to Home Security System</h1>
+            <p class="subtitle">Your safety is our priority</p>
+          
+            <button class="main-button" onclick="showSecurityPage()">View Security Page</button>
+            <a class="main-button" href="/index.shtml">Refresh</a>
+
+            <img src="https://securitybrief.com.au/uploads/story/2023/11/14/img-kBYEZKDZ6mTLWr4vhOVJp1PQ.webp" alt="House Image" class="house-image">
+        </div>
+    </div>
+
+
+
+   <div class="container" id="securityPage">
+   
+        </br>
+        <h1>Security Alert!</h1>
+        <p class="subtitle">Your system has detected unusual activity.</p>
+        <p>Detected Someone at Door: <!--#irsensor--></p>
+        <div class="button-container">
+            
+            <button id="notMeButton" class="auth-button" onclick="handleNotMe()">Not Me</button>
+            </a>
+            
+            <button id="meButton" class="auth-button" onclick="handleMe()">It's Me</button>
+        </div>
+        <a class="main-button" href="/index.shtml">Refresh</a>
+        <div id="passwordSection">
+            <input type="password" id="passwordInput" placeholder="Enter your password">
+            <button class="ok-button" onclick="checkPassword()">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup">
+        <h2>Enter Your Password</h2>
+        <input type="password" id="popupPasswordInput" placeholder="Enter your password">
+        <button onclick="checkPassword()">Submit</button>
+        <p id="error-message" class="error-message">Incorrect password. Try again.</p>
+    </div>
+</div>
+
+
+
+
+
+
+<div id="popupOverlay2" class="popup-overlay">
+    <div class="popup">
+        <h2>System Activated</h2>
+        <input type="text" id="popupTurnOffInput" placeholder="Enter OFF to turn off the buzzer ">
+        <button onclick="checkTurnOff()">Submit</button>
+        <p id="error-message2" class="error-message">Incorrect word. Try again.</p>
+    </div>
+</div>
+
+
+</body>
 </html>

@@ -21,6 +21,7 @@ add_executable(${PROGRAM_NAME}
     buzzer.c
     ir_sensor.c
     shared.c
+    servo.c
 )
 
 target_include_directories(${PROGRAM_NAME} PRIVATE
@@ -32,6 +33,7 @@ target_link_libraries(${PROGRAM_NAME}
     pico_lwip_http
     pico_stdlib
     hardware_adc
+    hardware_pwm
 )
 
 pico_enable_stdio_usb(${PROGRAM_NAME} TRUE)

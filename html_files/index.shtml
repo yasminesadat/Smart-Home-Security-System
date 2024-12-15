@@ -1040,13 +1040,13 @@
             var irSensorReading = document.getElementById("irsensor").textContent.trim();
 
             var ultrasonicReading = document.getElementById("ultra").textContent.trim();
-            var lightReading = document.getElementById("light").textContent.trim();
+            
 
 
             console.log("IR Sensor Reading:", irSensorReading);
 
             console.log("Ultrasonic Sensor Reading:", ultrasonicReading);
-            console.log("Light Sensor Reading:", lightReading);
+            
 
 
 

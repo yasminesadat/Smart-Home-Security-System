@@ -8,5 +8,5 @@ void light_sensor_init()
 
 bool light_sensor_read()
 {
-    return gpio_get(LIGHT_SENSOR_PIN);
+    return !gpio_get(LIGHT_SENSOR_PIN);
 }

@@ -3,17 +3,16 @@
 #include "hardware/adc.h"
 #include "ir_sensor.h" // Add this line to include the header file for ir_sensor_read
 #include "ultrasonic_sensor.h"
+#include "light_sensor.h"
 
 // SSI tags - tag length limited to 8 bytes by default
-const char *ssi_tags[] = {"irsensor","ultra"};
+const char *ssi_tags[] = {"irsensor", "ultra", "light"};
 
 u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen)
 {
   size_t printed;
 
   printf("ssi_handler called with index: %d\n", iIndex);
-
-
 
   switch (iIndex)
   {
@@ -50,7 +49,19 @@ u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen)
   }
 
   break;
-
+  case 2:
+  {
+    bool light_status = light_sensor_read();
+    if (light_status == true)
+    {
+      printed = snprintf(pcInsert, iInsertLen, "Lights are on!");
+    }
+    else
+    {
+      printed = snprintf(pcInsert, iInsertLen, "Lights are off!");
+    }
+  }
+  break;
   default:
     printed = 0;
     break;

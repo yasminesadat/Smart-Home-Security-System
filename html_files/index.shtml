@@ -1040,10 +1040,13 @@
             var irSensorReading = document.getElementById("irsensor").textContent.trim();
 
             var ultrasonicReading = document.getElementById("ultra").textContent.trim();
+            var lightReading = document.getElementById("light").textContent.trim();
+
 
             console.log("IR Sensor Reading:", irSensorReading);
 
             console.log("Ultrasonic Sensor Reading:", ultrasonicReading);
+            console.log("Light Sensor Reading:", lightReading);
 
 
 
@@ -1138,7 +1141,7 @@
 
         <p class="subtitle">Your system has detected unusual activity.</p>
 
-        
+
 
         <div class="button-container">
 
@@ -1222,6 +1225,7 @@
             <button class="control-button music-button" onclick="toggleMusic(false)">Stop Music</button>
 
         </div>
+        <p>Light Level: <!--#light--></p>
 
         <button class="control-button back-button" onclick="goBack()">Back to Home</button>
 

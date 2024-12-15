@@ -81,8 +81,9 @@ int main()
     {
         // ir_reading = ir_sensor_read();
         // sleep_ms(1000);
-        printf("%s", ultrasonic_sensor_read() ? "ON" : "OFF");
-        sleep_ms(1000);
+        // printf("%s", ultrasonic_sensor_read() ? "ON" : "OFF");
+        // sleep_ms(1000);
+        tight_loop_contents();
     }
 
     return 0;

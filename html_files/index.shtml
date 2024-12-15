@@ -1039,7 +1039,7 @@
 
             var irSensorReading = document.getElementById("irsensor").textContent.trim();
 
-            var ultrasonicReading = document.getElementById("ultrasonic").textContent.trim();
+            var ultrasonicReading = document.getElementById("ultrasonicreading").textContent.trim();
 
             console.log("IR Sensor Reading:", irSensorReading);
 
@@ -1101,7 +1101,7 @@
     <div class="container" id="welcomePage">
 
         <div id="irsensor" style="display: none"><!--#irsensor--></div>
-        <div id="ultrasonic" style="display: none"><!--#ultrasonic--></div>
+        <div id="ultrasonicreading" style="display: none"><!--#ultrasonicreading--></div>
 
         <div class="welcome-section">
 

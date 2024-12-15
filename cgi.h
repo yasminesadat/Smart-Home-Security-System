@@ -2,6 +2,7 @@
 #include "pico/cyw43_arch.h"
 #include "servo.h" 
 #include "buzzer.h"
+#include "led.h"
 // CGI handler which is run when a request for /led.cgi is detected
 const char *cgi_buzzer_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 {
@@ -35,6 +36,21 @@ const char *cgi_servo_handler(int iIndex, int iNumParams, char *pcParam[], char 
 }
 
 
+const char *cgi_led_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
+{
+    // Check if a request for LED has been made (/led.cgi?led=x)
+    if (strcmp(pcParam[0], "led") == 0) {
+        // Turn LED on (x=1) or off (x=0)
+        if (strcmp(pcValue[0], "0") == 0) {
+            leds_off();
+        } else if (strcmp(pcValue[0], "1") == 0) {
+            leds_on();
+        }
+    }
+    return "/index.shtml";
+}
+
+
 
 
 // tCGI Struct
@@ -47,11 +63,15 @@ static const tCGI cgi_handlers[] = {
     {
 
         "/servo.cgi", cgi_servo_handler,
+    },
+    {
+        // Html request for "/led.cgi" triggers cgi_handler
+        "/led.cgi", cgi_led_handler,
     }
 
 };
 
 void cgi_init(void)
 {
-    http_set_cgi_handlers(cgi_handlers, 2);
+    http_set_cgi_handlers(cgi_handlers, 3);
 }

@@ -7,7 +7,7 @@
 #endif
 
 
-#define LED_PIN 16 
+#define LED_PIN 17
 
 void leds_init();
 void leds_on();

@@ -22,6 +22,8 @@ add_executable(${PROGRAM_NAME}
     ir_sensor.c
     shared.c
     servo.c
+    led.c
+    ultrasonic_sensor.c
 )
 
 target_include_directories(${PROGRAM_NAME} PRIVATE

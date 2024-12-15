@@ -8,6 +8,9 @@
 #include "ir_sensor.h"
 #include "buzzer.h"
 #include "servo.h"
+#include "led.h"
+#include "ultrasonic_sensor.h"
+
 // Wi-Fi Credentials
 const char WIFI_SSID[] = "Youssef";
 const char WIFI_PASSWORD[] = "youssef12345";
@@ -29,8 +32,8 @@ void init()
     ir_sensor_init();
     buzzer_init();
     servo_init();
-    // leds_init();
-    // ultrasonic_sensor_init();
+    leds_init();
+    ultrasonic_sensor_init();
 }
 
 int main()

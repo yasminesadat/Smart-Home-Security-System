@@ -5,13 +5,15 @@
 #include "ultrasonic_sensor.h"
 
 // SSI tags - tag length limited to 8 bytes by default
-const char *ssi_tags[] = {"irsensor","ultrasonicreading"};
+const char *ssi_tags[] = {"irsensor","ultra"};
 
 u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen)
 {
   size_t printed;
 
   printf("ssi_handler called with index: %d\n", iIndex);
+
+
 
   switch (iIndex)
   {

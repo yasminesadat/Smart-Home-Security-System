@@ -1039,7 +1039,7 @@
 
             var irSensorReading = document.getElementById("irsensor").textContent.trim();
 
-            var ultrasonicReading = document.getElementById("ultrasonicreading").textContent.trim();
+            var ultrasonicReading = document.getElementById("ultra").textContent.trim();
 
             console.log("IR Sensor Reading:", irSensorReading);
 
@@ -1101,7 +1101,7 @@
     <div class="container" id="welcomePage">
 
         <div id="irsensor" style="display: none"><!--#irsensor--></div>
-        <div id="ultrasonicreading" style="display: none"><!--#ultrasonicreading--></div>
+        <div id="ultra" style="display: none"><!--#ultra--></div>
 
         <div class="welcome-section">
 
@@ -1138,7 +1138,7 @@
 
         <p class="subtitle">Your system has detected unusual activity.</p>
 
-        <p>Detected Someone at Door: <!--#irsensor--></p>
+        
 
         <div class="button-container">
 

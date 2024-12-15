@@ -9,6 +9,7 @@ void ultrasonic_sensor_init()
     gpio_set_dir(ECHO_PIN, GPIO_IN);
 }
 
+
 bool ultrasonic_sensor_read()
 {
     printf("Reading ultrasonic sensor\n");
@@ -37,7 +38,6 @@ bool ultrasonic_sensor_read()
     // Calculate the distance
     uint32_t pulse_duration_us = end_time_us - start_time_us;
     float distance_cm = pulse_duration_us / 58.0f;
-    printf("Distance: %.2f cm\n", distance_cm);
-    sleep_ms(1000);
+    //printf("Distance: %.2f cm\n", distance_cm);
     return (distance_cm <= MAX_DISTANCE);
 }

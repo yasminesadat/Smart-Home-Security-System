@@ -10,6 +10,7 @@
 #include "servo.h"
 #include "led.h"
 #include "ultrasonic_sensor.h"
+#include "light_sensor.h"
 
 // Wi-Fi Credentials
 const char WIFI_SSID[] = "Youssef";
@@ -34,6 +35,7 @@ void init()
     servo_init();
     leds_init();
     ultrasonic_sensor_init();
+    light_sensor_init();
 }
 
 int main()

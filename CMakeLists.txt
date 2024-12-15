@@ -24,6 +24,7 @@ add_executable(${PROGRAM_NAME}
     servo.c
     led.c
     ultrasonic_sensor.c
+    light_sensor.c
 )
 
 target_include_directories(${PROGRAM_NAME} PRIVATE

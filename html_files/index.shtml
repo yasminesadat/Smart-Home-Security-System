@@ -1032,7 +1032,7 @@
         }
 
 
-
+        let lastNotificationTime = 0;
         function updateStatus() {
 
 
@@ -1040,13 +1040,14 @@
             var irSensorReading = document.getElementById("irsensor").textContent.trim();
 
             var ultrasonicReading = document.getElementById("ultra").textContent.trim();
-            
+
 
 
             console.log("IR Sensor Reading:", irSensorReading);
 
             console.log("Ultrasonic Sensor Reading:", ultrasonicReading);
-            
+            const currentTime = Date.now();
+
 
 
 
@@ -1060,9 +1061,10 @@
 
             }
 
-            if (irSensorReading === "ON") {
+            if (irSensorReading === "ON" && currentTime - lastNotificationTime > 1000) {
 
                 showNotification("Motion Detected Beside The Protected Room!");
+                lastNotificationTime = currentTime;
 
             }
 
@@ -1072,13 +1074,56 @@
 
 
 
+        function fetchAndUpdateSensors() {
+            // Fetch data for IR sensor
+            fetch("/irsensor.shtml")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("irsensor").textContent = data.trim();
+                });
+
+            // Fetch data for Ultrasonic sensor
+            fetch("/ultra.shtml")
+                .then((response) => response.text())
+                .then((data) => {
+                    document.getElementById("ultra").textContent = data.trim();
+                });
+
+            // Call updateStatus to process the updated values
+            updateStatus();
+        }
+
+
+
         // Check sensor status every second
 
-        setInterval(updateStatus, 1000);
+        setInterval(fetchAndUpdateSensors, 1000);
 
         window.onload = updateStatus;
 
 
+
+        function updateLightLevel() {
+            // Fetch the light level from the server
+            fetch("/light.shtml")
+                .then((response) => response.text())
+                .then((data) => {
+                    console.log("Light Sensor Response:", data); // Log the raw response from the server
+
+                    // Update the light level dynamically
+                    document.getElementById("light").textContent = data.trim();
+                })
+                .catch((error) => {
+                    console.error("Error fetching light level:", error);
+                    document.getElementById("light").textContent = "Error";
+                });
+        }
+
+        // Call updateLightLevel every 1 second
+        setInterval(updateLightLevel, 1000);
+
+        // Initial call to populate immediately
+        updateLightLevel();
 
 
 
@@ -1225,7 +1270,8 @@
             <button class="control-button music-button" onclick="toggleMusic(false)">Stop Music</button>
 
         </div>
-        <p>Light Level: <!--#light--></p>
+        <p>Light Level: <span id="light">Loading...</span></p>
+
 
         <button class="control-button back-button" onclick="goBack()">Back to Home</button>
 

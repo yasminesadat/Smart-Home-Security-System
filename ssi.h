@@ -51,7 +51,12 @@ u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen)
   break;
   case 2:
   {
+    printf("light sensor \n");
+
     bool light_status = light_sensor_read();
+
+    printf("light sensor status %d \n", light_status);
+    
     if (light_status == true)
     {
       printed = snprintf(pcInsert, iInsertLen, "Lights are on!");

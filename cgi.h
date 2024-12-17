@@ -43,8 +43,10 @@ const char *cgi_led_handler(int iIndex, int iNumParams, char *pcParam[], char *p
         // Turn LED on (x=1) or off (x=0)
         if (strcmp(pcValue[0], "0") == 0) {
             leds_off();
+            cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
         } else if (strcmp(pcValue[0], "1") == 0) {
             leds_on();
+            cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
         }
     }
     return "/index.shtml";
@@ -58,15 +60,15 @@ const char *cgi_led_handler(int iIndex, int iNumParams, char *pcParam[], char *p
 static const tCGI cgi_handlers[] = {
     {
         // Html request for "/led.cgi" triggers cgi_handler
-        "/buzzer.cgi", cgi_buzzer_handler,
+        "/buzzer.cgi", cgi_buzzer_handler
     },
     {
 
-        "/servo.cgi", cgi_servo_handler,
+        "/servo.cgi", cgi_servo_handler
     },
     {
         // Html request for "/led.cgi" triggers cgi_handler
-        "/led.cgi", cgi_led_handler,
+        "/led.cgi", cgi_led_handler
     }
 
 };

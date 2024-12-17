@@ -13,8 +13,8 @@
 #include "light_sensor.h"
 
 // Wi-Fi Credentials
-const char WIFI_SSID[] = "Youssef";
-const char WIFI_PASSWORD[] = "youssef12345";
+const char WIFI_SSID[] = "Yasmine";
+const char WIFI_PASSWORD[] = "yasmine2004";
 
 void print_ip_address()
 {

@@ -45,6 +45,7 @@ The system uses a **web-based app** that can be accessed from a mobile browser w
 
 ### Home Model 
 ![Home](https://github.com/user-attachments/assets/7cf49dba-d99c-4ccf-9d59-021c6947ba0b)
+![Home Connections](https://github.com/user-attachments/assets/26fb0523-a6a3-4025-a060-3bfdf63a32db)
 
 ### App Screenshots
 <p float="left">

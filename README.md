@@ -9,8 +9,9 @@ The **Smart Home Security System** is an advanced security solution designed to 
 - **Automated Responses**: Triggers alarms, controls lights, and manages the door lock mechanism in response to detected intrusions.
 - **Web-Based Control**: Homeowners can manually control the system, including deactivating the alarm, controlling the servo motor, or resetting the system via a mobile web app.
 
+## Methods
 <details>
-<summary>Methods</summary>
+<summary>Components and Workflow</summary>
 
 ### Hardware Components
 - **Infrared Sensor**: Detects human presence inside the house, specifically in sensitive areas.
